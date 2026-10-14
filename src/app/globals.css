@@ -27,3 +27,20 @@ body { margin: 0; background: #0a101d; color: #e9edf5; font-family: Arial, sans-
 
 /* Dealership dashboard preview */
 .dashboard-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:17px;margin:35px 0}.dashboard-stat,.dashboard-panel{background:white;border:1px solid #e5e8ef;border-radius:10px;padding:26px;box-shadow:0 8px 26px #1017250d}.dashboard-stat small{display:block;color:#697481;font-weight:800;font-size:12px}.dashboard-stat strong{font-size:44px;display:block;margin:13px 0 3px;color:#ed2338}.dashboard-stat p{font-size:11px;color:#8a93a0}.dashboard-panel h2{font-size:26px}.dashboard-panel>p:not(.overline){font-size:14px;color:#697481;margin-bottom:24px}@media(max-width:760px){.dashboard-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.dashboard-stat{padding:17px}.dashboard-panel{padding:20px}}
+
+
+/* Real listings are separated from fictional demo inventory */
+.real-listings{margin:15px 0 56px;padding-bottom:48px;border-bottom:2px solid #e4e7ec}
+.real-listings-heading{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+.real-listings-heading h2,.demo-section-heading h2{font-size:clamp(24px,3vw,34px);letter-spacing:-1px;margin:4px 0}
+.real-listings-heading em{font-style:normal;color:#ed2338}
+.real-count{background:#f0f2f6;border:1px solid #e0e3e9;border-radius:25px;padding:9px 14px;color:#505a67;font-size:11px;font-weight:800}
+.real-status{padding:25px;background:#fff;border:1px solid #e6e8ee;border-left:4px solid #ef2338;border-radius:7px;color:#556171;font-size:14px;line-height:1.6}
+.real-photo{display:flex;align-items:center;justify-content:center}
+.real-photo img{width:100%;height:100%;object-fit:cover}
+.real-photo-placeholder{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;background:linear-gradient(135deg,#243044,#0b1321);color:white;width:100%;height:100%;font-size:19px;font-weight:950;letter-spacing:2px}
+.real-photo-placeholder small{font-size:10px;letter-spacing:0;color:#bfc5d0}
+.demo-section-heading{margin:28px 0}.demo-section-heading>p:last-child{color:#7e8793;font-size:12px}
+.real-detail-photo img{width:100%;height:100%;object-fit:contain;background:#101723}
+.real-detail-photo>.real-photo-placeholder{border-radius:9px}
+@media(max-width:760px){.real-listings-heading{align-items:flex-start}.real-count{white-space:nowrap;font-size:10px}.real-listings{margin-top:40px}}
