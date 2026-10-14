@@ -1,0 +1,17 @@
+name: VENZARO Smoke Tests
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  public-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test deployed service
+        env:
+          VENZARO_BASE_URL: https://venzaro-platform.onrender.com
+        run: node --test tests/smoke.mjs
