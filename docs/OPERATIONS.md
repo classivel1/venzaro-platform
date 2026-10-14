@@ -6,7 +6,6 @@ O VENZARO ainda depende de um PostgreSQL exclusivo para habilitar APIs persisten
 POST /api/tenants — cria revenda
 POST /api/vehicles — cria anúncio em rascunho
 GET /api/admin/vehicles?tenantId=<uuid> — lista rascunhos e anúncios de uma revenda
-PATCH /api/vehicles/<uuid> — altera status (draft/published/archived) exigindo tenantId no corpo
 Todas exigem x-admin-api-key. A chave administrativa é global, provisória e NÃO pode ser exposta ao browser.
 GET /api/vehicles é público, somente anúncios publicados de revendas ativas.
 ## Próximas entregas
