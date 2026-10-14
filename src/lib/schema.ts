@@ -69,6 +69,10 @@ export function ensureSchema():Promise<void>{
  created_at timestamptz NOT NULL DEFAULT now())`);
  await client.query("CREATE INDEX IF NOT EXISTS vehicle_photo_blobs_vehicle_idx ON vehicle_photo_blobs(vehicle_id,position)");
  await client.query("ALTER TABLE tenants ADD COLUMN IF NOT EXISTS whatsapp text");
+ await client.query("ALTER TABLE tenants ADD COLUMN IF NOT EXISTS plan_code text NOT NULL DEFAULT 'starter'");
+ await client.query("ALTER TABLE tenants ADD COLUMN IF NOT EXISTS subscription_status text NOT NULL DEFAULT 'trial'");
+ await client.query("ALTER TABLE tenants ADD COLUMN IF NOT EXISTS brand_color text NOT NULL DEFAULT '#e92338'");
+ await client.query("ALTER TABLE tenants ADD COLUMN IF NOT EXISTS logo_url text");
  await client.query("COMMIT");
  }catch(e){await client.query("ROLLBACK");throw e}finally{client.release()}
  })().catch(e=>{initialized=undefined;throw e});
