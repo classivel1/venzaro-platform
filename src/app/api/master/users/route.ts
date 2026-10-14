@@ -19,7 +19,7 @@ export async function POST(request:Request){
  const name=typeof body.displayName==="string"?body.displayName.trim():"";
  const tenantId=typeof body.tenantId==="string"?body.tenantId:"";
  const password=typeof body.password==="string"?body.password:"";
- if(!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)||email.length>254||name.length<2||name.length>120||!/^[a-f0-9]{8}-[a-f0-9-]{27}$/i.test(tenantId)||password.length<12||password.length>128)
+ if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254||name.length<2||name.length>120||!/^[a-f0-9]{8}-[a-f0-9-]{27}$/i.test(tenantId)||password.length<12||password.length>128)
  return NextResponse.json({error:"Confira nome, e-mail, revenda e senha de 12 a 128 caracteres"},{status:400});
  const {passwordHash}=await import("../../../../lib/dealer-auth");
  const hash=await passwordHash(password);
