@@ -1,6 +1,7 @@
 import {NextResponse} from "next/server";
 import {currentMaster} from "../../../../lib/master-auth";
 import {getPool} from "../../../../lib/db";
+import {recordAudit} from "../../../../lib/audit";
 export const runtime="nodejs";
 export async function GET(){
  try{if(!await currentMaster())return NextResponse.json({error:"Não autorizado"},{status:401});
@@ -25,6 +26,6 @@ export async function POST(request:Request){
  const hash=await passwordHash(password);
  const r=await getPool().query("INSERT INTO dealer_users(tenant_id,email,display_name,password_hash) SELECT id,$2,$3,$4 FROM tenants WHERE id=$1 AND status='active' ON CONFLICT(email) DO NOTHING RETURNING id,email,display_name,tenant_id",[tenantId,email,name,hash]);
  if(!r.rowCount)return NextResponse.json({error:"E-mail já cadastrado ou revenda indisponível"},{status:409});
- return NextResponse.json(r.rows[0],{status:201});
+ await recordAudit("master",master.id,"user.create","dealer_user",r.rows[0].id,{tenantId});return NextResponse.json(r.rows[0],{status:201});
  }catch(e){console.error("Master user create error",e instanceof Error?e.message:"unknown");return NextResponse.json({error:"Não foi possível cadastrar usuário"},{status:503})}
 }
