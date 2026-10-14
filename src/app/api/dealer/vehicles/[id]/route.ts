@@ -12,4 +12,3 @@ export async function PATCH(request:Request,{params}:{params:Promise<{id:string}
  if(!r.rowCount)return NextResponse.json({error:"Anúncio não encontrado"},{status:404});
  return NextResponse.json(r.rows[0]);
  }catch(e){console.error("Dealer update error",e instanceof Error?e.message:"unknown");return NextResponse.json({error:"Serviço indisponível"},{status:503})}}
-}
