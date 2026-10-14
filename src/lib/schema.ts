@@ -47,6 +47,19 @@ export function ensureSchema():Promise<void>{
  expires_at timestamptz NOT NULL,
  created_at timestamptz NOT NULL DEFAULT now())`);
  await client.query("CREATE INDEX IF NOT EXISTS dealer_sessions_expiry_idx ON dealer_sessions(expires_at)");
+ await client.query(`CREATE TABLE IF NOT EXISTS master_users (
+ id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+ email text NOT NULL UNIQUE,
+ display_name text NOT NULL,
+ password_hash text NOT NULL,
+ is_active boolean NOT NULL DEFAULT true,
+ created_at timestamptz NOT NULL DEFAULT now())`);
+ await client.query(`CREATE TABLE IF NOT EXISTS master_sessions (
+ token_hash text PRIMARY KEY,
+ user_id uuid NOT NULL REFERENCES master_users(id) ON DELETE CASCADE,
+ expires_at timestamptz NOT NULL,
+ created_at timestamptz NOT NULL DEFAULT now())`);
+ await client.query("CREATE INDEX IF NOT EXISTS master_sessions_expiry_idx ON master_sessions(expires_at)");
  await client.query("COMMIT");
  }catch(e){await client.query("ROLLBACK");throw e}finally{client.release()}
  })().catch(e=>{initialized=undefined;throw e});
