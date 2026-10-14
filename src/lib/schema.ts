@@ -33,6 +33,20 @@ export function ensureSchema():Promise<void>{
  url text NOT NULL CHECK (url ~ '^https://'),
  position integer NOT NULL DEFAULT 0 CHECK (position >= 0))`);
  await client.query("CREATE INDEX IF NOT EXISTS vehicle_images_vehicle_idx ON vehicle_images(vehicle_id,position)");
+ await client.query(`CREATE TABLE IF NOT EXISTS dealer_users (
+ id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+ tenant_id uuid NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+ email text NOT NULL UNIQUE,
+ password_hash text NOT NULL,
+ display_name text NOT NULL,
+ is_active boolean NOT NULL DEFAULT true,
+ created_at timestamptz NOT NULL DEFAULT now())`);
+ await client.query(`CREATE TABLE IF NOT EXISTS dealer_sessions (
+ token_hash text PRIMARY KEY,
+ user_id uuid NOT NULL REFERENCES dealer_users(id) ON DELETE CASCADE,
+ expires_at timestamptz NOT NULL,
+ created_at timestamptz NOT NULL DEFAULT now())`);
+ await client.query("CREATE INDEX IF NOT EXISTS dealer_sessions_expiry_idx ON dealer_sessions(expires_at)");
  await client.query("COMMIT");
  }catch(e){await client.query("ROLLBACK");throw e}finally{client.release()}
  })().catch(e=>{initialized=undefined;throw e});
