@@ -20,6 +20,7 @@ export async function GET(request:Request){
 }
 export async function POST(request:Request){
  if(!authorized(request))return NextResponse.json({error:"Não autorizado"},{status:401});
+ try{await ensureSchema()}catch(error){return fail(error)}
  let body:Record<string,unknown>;
  try{body=await request.json()}catch{return NextResponse.json({error:"JSON inválido"},{status:400})}
  const text=(key:string,max:number)=>typeof body[key]==="string"?(body[key] as string).trim().slice(0,max):"";
