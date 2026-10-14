@@ -1,0 +1,3 @@
+import Link from "next/link";
+import ActivateForm from "./ActivateForm";
+export default function ActivateMasterPage(){return <main className="premium-home"><header className="premium-header"><div className="premium-wrap header-inner"><Link href="/" className="premium-logo"><span>V</span>ENZARO<small>ATIVAÇÃO MASTER</small></Link><Link className="header-cta" href="/master">Acessar login ↗</Link></div></header><section className="premium-wrap dw-page"><ActivateForm/></section></main>}
