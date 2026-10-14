@@ -6,3 +6,6 @@ test("Master endpoints reject unauthenticated listing",async()=>{const r=await f
 test("Dealer endpoints reject unauthenticated listing",async()=>{const r=await fetch(base+"/api/dealer/vehicles");assert.equal(r.status,401)});
 test("Public homepage responds",async()=>{const r=await fetch(base+"/");assert.equal(r.status,200)});
 test("Database readiness responds or signals outage",async()=>{const r=await fetch(base+"/api/ready");assert.ok([200,503].includes(r.status));const data=await r.json();assert.ok(["ready","unavailable"].includes(data.status));if(process.env.REQUIRE_DATABASE_READY==="true")assert.equal(r.status,200)});
+
+test("CSRF guard rejects cross-origin Master writes",async()=>{const r=await fetch(base+"/api/master/login",{method:"POST",headers:{"Origin":"https://example.invalid","Content-Type":"application/json"},body:JSON.stringify({email:"invalid@example.invalid",password:"invalid"})});assert.equal(r.status,403)});
+test("CSRF guard rejects missing-origin dealer writes",async()=>{const r=await fetch(base+"/api/dealer/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:"invalid@example.invalid",password:"invalid"})});assert.equal(r.status,403)});
