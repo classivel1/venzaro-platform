@@ -1,6 +1,7 @@
 import {NextResponse} from "next/server";
 import {currentDealer} from "../../../../../../lib/dealer-auth";
 import {getPool} from "../../../../../../lib/db";
+import {recordAudit} from "../../../../../../lib/audit";
 export const runtime="nodejs";
 export async function PATCH(request:Request,{params}:{params:Promise<{id:string}>}){
  try{const user=await currentDealer();if(!user)return NextResponse.json({error:"Não autorizado"},{status:401});
@@ -10,6 +11,6 @@ export async function PATCH(request:Request,{params}:{params:Promise<{id:string}
  const year=body.year,mileage=body.mileage,priceCents=body.priceCents;
  if(title.length<5||!brand||!model||!["carro","moto"].includes(category)||!fuel||!transmission||!city||!Number.isInteger(year)||year<1900||year>2100||!Number.isSafeInteger(mileage)||mileage<0||!Number.isSafeInteger(priceCents)||priceCents<=0)return NextResponse.json({error:"Verifique os campos do anúncio"},{status:400});
  const r=await getPool().query("UPDATE vehicles SET title=$1,brand=$2,model=$3,category=$4,year=$5,price_cents=$6,mileage=$7,fuel=$8,transmission=$9,city=$10,description=$11,updated_at=now() WHERE id=$12 AND tenant_id=$13 RETURNING id,status",[title,brand,model,category,year,priceCents,mileage,fuel,transmission,city,description,id,user.tenant_id]);
- if(!r.rowCount)return NextResponse.json({error:"Anúncio não encontrado"},{status:404});return NextResponse.json(r.rows[0])
+ if(!r.rowCount)return NextResponse.json({error:"Anúncio não encontrado"},{status:404});await recordAudit("dealer",user.id,"vehicle.details","vehicle",id,{title,priceCents});return NextResponse.json(r.rows[0])
  }catch(e){console.error("Dealer edit error",e instanceof Error?e.message:"unknown");return NextResponse.json({error:"Serviço indisponível"},{status:503})}
 }
