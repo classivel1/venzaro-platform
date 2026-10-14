@@ -13,7 +13,7 @@ export async function GET(request:Request){
   if(tenant){values.push(tenant);conditions.push("t.slug=$"+values.length)}
   if(category){values.push(category);conditions.push("v.category=$"+values.length)}
   if(q){values.push("%"+q+"%");conditions.push("(v.title ILIKE $"+values.length+" OR v.brand ILIKE $"+values.length+" OR v.model ILIKE $"+values.length+")")}
-  const sql="SELECT v.id,v.title,v.brand,v.model,v.category,v.year,v.price_cents,v.mileage,v.fuel,v.transmission,v.city,v.description,v.created_at,t.name AS seller_name,t.slug AS tenant_slug,(SELECT vi.url FROM vehicle_images vi WHERE vi.vehicle_id=v.id ORDER BY vi.position ASC,vi.id LIMIT 1) AS image_url FROM vehicles v JOIN tenants t ON t.id=v.tenant_id WHERE "+conditions.join(" AND ")+" ORDER BY v.created_at DESC LIMIT 60";
+  const sql="SELECT v.id,v.title,v.brand,v.model,v.category,v.year,v.price_cents,v.mileage,v.fuel,v.transmission,v.city,v.description,v.created_at,t.name AS seller_name,t.slug AS tenant_slug,COALESCE((SELECT '/api/media/' || pb.id::text FROM vehicle_photo_blobs pb WHERE pb.vehicle_id=v.id ORDER BY pb.position,pb.created_at LIMIT 1),(SELECT vi.url FROM vehicle_images vi WHERE vi.vehicle_id=v.id ORDER BY vi.position,vi.id LIMIT 1)) AS image_url FROM vehicles v JOIN tenants t ON t.id=v.tenant_id WHERE "+conditions.join(" AND ")+" ORDER BY v.created_at DESC LIMIT 60";
   const result=await getPool().query(sql,values);
   return NextResponse.json({items:result.rows});
  }catch(error){return fail(error)}
