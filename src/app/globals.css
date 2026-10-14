@@ -44,3 +44,40 @@ body { margin: 0; background: #0a101d; color: #e9edf5; font-family: Arial, sans-
 .real-detail-photo img{width:100%;height:100%;object-fit:contain;background:#101723}
 .real-detail-photo>.real-photo-placeholder{border-radius:9px}
 @media(max-width:760px){.real-listings-heading{align-items:flex-start}.real-count{white-space:nowrap;font-size:10px}.real-listings{margin-top:40px}}
+
+
+/* VENZARO private dealer workspace */
+.dw-page{padding-top:44px;padding-bottom:90px;min-height:75vh}
+.dw-login{max-width:490px;margin:34px auto;padding:40px;background:white;border-radius:13px;box-shadow:0 12px 50px #10182614;border:1px solid #e5e7ed}
+.dw-login h1{font-size:clamp(32px,4vw,44px);letter-spacing:-1.8px;line-height:1.11;color:#151b26;margin:15px 0}
+.dw-login h1 em,.dw-top h1 em{font-style:normal;color:#ec263b}
+.dw-login>p:not(.overline){color:#667180;font-size:14px;line-height:1.6}
+.dw-login form{display:flex;flex-direction:column;gap:18px;margin:28px 0 15px}
+.dw-login label,.dw-form label{display:block;color:#465160;font-size:12px;font-weight:850}
+.dw-login label input,.dw-form input,.dw-form select,.dw-form textarea{display:block;width:100%;border:1px solid #dce1e8;background:#fafbfc;color:#1d2735;border-radius:7px;padding:13px;font:inherit;margin-top:8px;font-size:14px}
+.dw-login>small{color:#87909e;font-size:11px;line-height:1.7;display:block}
+.dw-message{background:#e9f7ed;border:1px solid #b8ddc3;color:#16592d;padding:13px 17px;border-radius:7px;margin:15px 0;font-size:13px}
+.dw-error{background:#fff0f0;border-color:#f4b8be;color:#a41127}
+.dw-top{display:flex;justify-content:space-between;align-items:center;gap:18px}
+.dw-top h1{font-size:clamp(31px,4vw,48px);letter-spacing:-1.9px;margin:5px 0}
+.dw-top>div>p:last-child{color:#687381}
+.dw-logout{border:1px solid #d8dee6;background:white;padding:13px 20px;font:inherit;font-size:12px;font-weight:850;border-radius:7px;cursor:pointer;color:#161e29}
+.dw-columns{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);align-items:start;gap:22px}
+.dw-form{display:flex;flex-direction:column;gap:17px;margin-top:24px}
+.dw-form textarea{resize:vertical;min-height:110px}
+.dw-form .premium-red-btn{align-self:flex-start;margin-top:8px}
+.dw-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.dw-empty{background:#f6f8fa;padding:29px;border-radius:8px;color:#818b99;text-align:center;font-size:13px;margin-top:25px}
+.dw-items{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+.dw-item{border:1px solid #e6e8ed;padding:18px;border-radius:8px}
+.dw-item h3{font-size:18px;margin:9px 0 5px}
+.dw-item p{font-size:12px;color:#77818f;margin:0 0 10px}
+.dw-item strong{font-size:19px}
+.dw-status{display:inline-block;padding:5px 8px;border-radius:4px;font-size:10px;text-transform:uppercase;letter-spacing:.5px;font-weight:900;background:#e8eaf0;color:#505b68}
+.dw-status.published{background:#e3f5e8;color:#137635}
+.dw-status.archived{background:#f2e7e8;color:#8c4350}
+.dw-item-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+.dw-item-actions button{border:1px solid #dce1e7;background:#f8f9fb;color:#1f2c39;font:inherit;font-size:11px;font-weight:900;padding:9px 13px;border-radius:5px;cursor:pointer}
+.dw-item-actions button:first-child{background:#ee263a;border-color:#ee263a;color:white}
+@media(max-width:920px){.dw-columns{grid-template-columns:1fr}}
+@media(max-width:620px){.dw-login{margin:5px auto;padding:23px}.dw-top{display:block}.dw-logout{margin-top:10px}.dw-two{grid-template-columns:1fr}}
