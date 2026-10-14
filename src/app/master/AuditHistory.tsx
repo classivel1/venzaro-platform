@@ -1,0 +1,7 @@
+"use client";
+import {useEffect,useState} from "react";
+type Event={id:number;actor_role:string;action:string;entity_type:string;entity_id:string;created_at:string};
+export default function AuditHistory(){const [events,setEvents]=useState<Event[]>([]),[busy,setBusy]=useState(true),[error,setError]=useState("");
+async function refresh(){setBusy(true);try{const r=await fetch("/api/master/audit",{cache:"no-store"});if(!r.ok)throw Error("Registro indisponível");const d=await r.json();setEvents(d.items||[])}catch(e){setError(e instanceof Error?e.message:"Não foi possível consultar")}finally{setBusy(false)}}
+useEffect(()=>{void refresh()},[]);
+return <section className="dashboard-panel master-audit"><div className="dw-top"><div><p className="overline">SEGURANÇA E GOVERNANÇA</p><h2>Histórico de alterações</h2><p>Últimos 50 registros administrativos e de veículos.</p></div><button type="button" className="dw-logout" onClick={()=>void refresh()}>Atualizar ↻</button></div>{busy&&<div className="real-status">Consultando auditoria...</div>}{error&&<div role="alert" className="dw-message dw-error">{error}</div>}{!busy&&events.length===0&&<div className="dw-empty">Nenhuma alteração registrada ainda.</div>}<div className="audit-feed">{events.map(e=><div className="audit-record" key={e.id}><span>{new Date(e.created_at).toLocaleString("pt-BR")}</span><strong>{e.action}</strong><small>{e.actor_role==="master"?"Administrador Master":"Revenda"} · {e.entity_type} · {e.entity_id.slice(0,8)}</small></div>)}</div></section>}
