@@ -98,3 +98,21 @@ body { margin: 0; background: #0a101d; color: #e9edf5; font-family: Arial, sans-
 .password-panel{margin-top:25px}
 .master-create-user{margin:20px 0 23px;max-width:650px}
 @media(max-width:560px){.manage-open{padding:11px}.photo-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+
+/* Premium SaaS admin finishing */
+.master-control-sections{margin-top:35px}
+.master-control-sections>.dw-top{margin-bottom:20px}
+.master-control-sections>.dw-top h2{font-size:clamp(25px,3vw,35px);letter-spacing:-1.1px;margin:7px 0}
+.master-control-sections .dw-item-actions button{transition:background .15s,border-color .15s}
+.master-control-sections .dw-item-actions button:hover{background:#ffe6e9;border-color:#efb6bd}
+.tenant-config{margin-top:14px;padding-top:10px;border-top:1px solid #e6eaf0}
+.tenant-config .dw-form{background:#f7f9fb;border:1px solid #e4e7eb;border-radius:9px;padding:15px}
+.master-audit{margin-top:27px}
+.master-audit h2{font-size:26px;letter-spacing:-.8px}
+.audit-feed{margin-top:18px;max-height:300px;overflow-y:auto}
+.audit-record{display:grid;grid-template-columns:155px 1fr 1.2fr;gap:15px;padding:13px 4px;border-top:1px solid #e9ebf0;align-items:center;font-size:12px}
+.audit-record>span{color:#727c89}
+.audit-record strong{color:#202b39;font-size:12px}
+.audit-record small{color:#87919e;font-size:11px;overflow-wrap:anywhere}
+@media(max-width:760px){.audit-record{grid-template-columns:1fr;gap:4px}.master-audit .dw-top{display:block}.master-audit .dw-logout{margin-top:12px}}
