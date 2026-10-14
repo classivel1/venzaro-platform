@@ -81,3 +81,20 @@ body { margin: 0; background: #0a101d; color: #e9edf5; font-family: Arial, sans-
 .dw-item-actions button:first-child{background:#ee263a;border-color:#ee263a;color:white}
 @media(max-width:920px){.dw-columns{grid-template-columns:1fr}}
 @media(max-width:620px){.dw-login{margin:5px auto;padding:23px}.dw-top{display:block}.dw-logout{margin-top:10px}.dw-two{grid-template-columns:1fr}}
+
+
+/* Dealer photo uploader and edit controls */
+.vehicle-manage{margin-top:14px;border-top:1px solid #e5e8ef;padding-top:11px}
+.manage-open{margin-top:16px;padding:15px;background:#f8f9fb;border:1px solid #e6eaf0;border-radius:9px}
+.manage-photos{margin-top:25px;border-top:1px solid #dee4eb;padding-top:17px}
+.manage-photos h4{margin:0 0 6px;font-size:16px}
+.manage-photos p{font-size:12px;color:#606e80;line-height:1.55}
+.photo-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:10px;margin:14px 0}
+.photo-tile{background:white;border:1px solid #e0e4eb;border-radius:7px;overflow:hidden}
+.photo-tile img{width:100%;height:95px;object-fit:cover;display:block}
+.photo-tile button{width:100%;font:inherit;font-size:11px;background:#fff1f2;color:#a61e2c;border:0;padding:9px;cursor:pointer}
+.upload-control{display:block;margin:14px 0;font-size:12px;color:#1b2838;font-weight:850}
+.upload-control input{display:block;max-width:100%;margin-top:8px;font-size:12px}
+.password-panel{margin-top:25px}
+.master-create-user{margin:20px 0 23px;max-width:650px}
+@media(max-width:560px){.manage-open{padding:11px}.photo-list{grid-template-columns:repeat(3,minmax(0,1fr))}}
