@@ -6,8 +6,25 @@ export default function VehicleManager({vehicle,refresh}:{vehicle:Vehicle;refres
  const field=(k:keyof typeof form,value:string)=>setForm(x=>({...x,[k]:value}));
  async function save(e:React.FormEvent<HTMLFormElement>){e.preventDefault();setEditing(true);setMessage("");setError("");
  try{const r=await fetch("/api/dealer/vehicles/"+vehicle.id+"/details",{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({...form,year:Number(form.year),mileage:Number(form.mileage),priceCents:Math.round(Number(form.price)*100)})});const d=await r.json();if(!r.ok)throw Error(d.error||"Falha na edição");setMessage("Alterações salvas.");setOpen(false);await refresh()}catch(e){setError(e instanceof Error?e.message:"Erro ao salvar")}finally{setEditing(false)}}
+ async function optimize(file:File):Promise<File>{
+ if(file.size<=1200000)return file;
+ if(!file.type.startsWith("image/"))return file;
+ const source=await createImageBitmap(file);
+ try{
+ const factor=Math.min(1,1600/Math.max(source.width,source.height));
+ const canvas=document.createElement("canvas");
+ canvas.width=Math.max(1,Math.round(source.width*factor));canvas.height=Math.max(1,Math.round(source.height*factor));
+ const ctx=canvas.getContext("2d");if(!ctx)throw Error("Não foi possível preparar imagem");
+ ctx.drawImage(source,0,0,canvas.width,canvas.height);
+ for(const quality of [.84,.7,.55,.4]){
+ const blob=await new Promise<Blob|null>(resolve=>canvas.toBlob(resolve,"image/jpeg",quality));
+ if(blob&&blob.size<=1200000)return new File([blob],file.name.replace(/\.[^.]+$/,"")+".jpg",{type:"image/jpeg"});
+ }
+ throw Error("A imagem continua grande. Escolha uma foto menor.");
+ }finally{source.close()}
+ }
  async function upload(e:React.ChangeEvent<HTMLInputElement>){const file=e.target.files?.[0];if(!file)return;setUploading(true);setError("");setMessage("");
- try{if(file.size>1200000)throw Error("Limite de 1,2 MB por foto");const body=new FormData();body.append("photo",file);const r=await fetch("/api/dealer/vehicles/"+vehicle.id+"/photos",{method:"POST",body});const d=await r.json();if(!r.ok)throw Error(d.error||"Erro ao carregar foto");setMessage("Foto salva.");await refresh()}catch(e){setError(e instanceof Error?e.message:"Falha no envio")}finally{setUploading(false);e.target.value=""}}
+ try{const selected=await optimize(file);if(selected.size>1200000)throw Error("Limite de 1,2 MB por foto");const body=new FormData();body.append("photo",selected);const r=await fetch("/api/dealer/vehicles/"+vehicle.id+"/photos",{method:"POST",body});const d=await r.json();if(!r.ok)throw Error(d.error||"Erro ao carregar foto");setMessage("Foto salva.");await refresh()}catch(e){setError(e instanceof Error?e.message:"Falha no envio")}finally{setUploading(false);e.target.value=""}}
  async function remove(id:string){setError("");setMessage("");try{const r=await fetch("/api/dealer/photos/"+id,{method:"DELETE"});if(!r.ok)throw Error("Não foi possível remover");await refresh();setMessage("Foto removida.")}catch(e){setError(e instanceof Error?e.message:"Erro")}}
  return <div className="vehicle-manage"><div className="dw-item-actions"><button type="button" onClick={()=>setOpen(!open)}>{open?"Fechar edição":"Editar dados e fotos"}</button></div>
  {message&&<div className="dw-message" role="status">{message}</div>}{error&&<div className="dw-message dw-error" role="alert">{error}</div>}
