@@ -11,9 +11,14 @@ export async function POST(request:Request){
  const owner=process.env.VENZARO_MASTER_OWNER_EMAIL?.trim().toLowerCase();
  if(!owner||email!==owner)return NextResponse.json({error:"E-mail Master não autorizado"},{status:403});
  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254||name.length<2||name.length>120||password.length<12||password.length>128)return NextResponse.json({error:"E-mail, nome ou senha inválidos (mínimo 12 caracteres)"},{status:400});
+ let client;
  try{await ensureSchema();const hash=await passwordHash(password);
- const r=await getPool().query("INSERT INTO master_users(email,display_name,password_hash) SELECT $1,$2,$3 WHERE NOT EXISTS (SELECT 1 FROM master_users) RETURNING id,email,display_name",[email,name,hash]);
- if(!r.rowCount)return NextResponse.json({error:"Master já inicializado. Nenhuma segunda conta foi criada."},{status:409});
+ client=await getPool().connect();await client.query("BEGIN");
+ await client.query("SELECT pg_advisory_xact_lock(78312211)");
+ const existing=await client.query("SELECT id FROM master_users LIMIT 1");
+ if(existing.rowCount){await client.query("ROLLBACK");return NextResponse.json({error:"Master já inicializado. Nenhuma segunda conta foi criada."},{status:409})}
+ const r=await client.query("INSERT INTO master_users(email,display_name,password_hash) VALUES($1,$2,$3) RETURNING id,email,display_name",[email,name,hash]);
+ await client.query("COMMIT");
  return NextResponse.json(r.rows[0],{status:201})}
- catch(e){console.error("Master bootstrap failed",e instanceof Error?e.message:"unknown");return NextResponse.json({error:"Serviço indisponível"},{status:503})}
+ catch(e){if(client)try{await client.query("ROLLBACK")}catch{}console.error("Master bootstrap failed",e instanceof Error?e.message:"unknown");return NextResponse.json({error:"Serviço indisponível"},{status:503})}finally{client?.release()}
 }
