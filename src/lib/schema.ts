@@ -60,6 +60,15 @@ export function ensureSchema():Promise<void>{
  expires_at timestamptz NOT NULL,
  created_at timestamptz NOT NULL DEFAULT now())`);
  await client.query("CREATE INDEX IF NOT EXISTS master_sessions_expiry_idx ON master_sessions(expires_at)");
+ await client.query(`CREATE TABLE IF NOT EXISTS vehicle_photo_blobs (
+ id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+ vehicle_id uuid NOT NULL REFERENCES vehicles(id) ON DELETE CASCADE,
+ mime_type text NOT NULL CHECK (mime_type IN ('image/jpeg','image/png','image/webp')),
+ bytes bytea NOT NULL,
+ position integer NOT NULL DEFAULT 0,
+ created_at timestamptz NOT NULL DEFAULT now())`);
+ await client.query("CREATE INDEX IF NOT EXISTS vehicle_photo_blobs_vehicle_idx ON vehicle_photo_blobs(vehicle_id,position)");
+ await client.query("ALTER TABLE tenants ADD COLUMN IF NOT EXISTS whatsapp text");
  await client.query("COMMIT");
  }catch(e){await client.query("ROLLBACK");throw e}finally{client.release()}
  })().catch(e=>{initialized=undefined;throw e});
