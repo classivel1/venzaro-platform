@@ -1,4 +1,5 @@
 import {NextResponse} from "next/server";
+import {loginAllowed,loginFailed,loginSucceeded} from "../../../../lib/login-guard";
 import {getPool} from "../../../../lib/db";
 import {ensureSchema} from "../../../../lib/schema";
 import {issueSession,passwordMatches,sessionCookie} from "../../../../lib/dealer-auth";
@@ -10,8 +11,10 @@ export async function POST(request:Request){
  const password=typeof data.password==="string"?data.password:"";
  if(email.length>254||password.length>256||!email.includes("@")||!password)return NextResponse.json({error:"Credenciais inválidas"},{status:401});
  await ensureSchema();
+ if(!await loginAllowed(request,"dealer"))return NextResponse.json({error:"Muitas tentativas. Tente novamente em 15 minutos."},{status:429});
  const r=await getPool().query("SELECT u.id,u.password_hash FROM dealer_users u JOIN tenants t ON t.id=u.tenant_id WHERE u.email=$1 AND u.is_active=true AND t.status='active' LIMIT 1",[email]);
- if(!r.rows[0]||!(await passwordMatches(password,r.rows[0].password_hash)))return NextResponse.json({error:"Credenciais inválidas"},{status:401});
+ if(!r.rows[0]||!(await passwordMatches(password,r.rows[0].password_hash))){await loginFailed(request,"dealer");return NextResponse.json({error:"Credenciais inválidas"},{status:401})}
+ await loginSucceeded(request,"dealer");
  const token=await issueSession(r.rows[0].id);
  const response=NextResponse.json({ok:true});
  response.cookies.set(sessionCookie.name,token,sessionCookie.options);
