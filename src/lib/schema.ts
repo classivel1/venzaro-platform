@@ -77,6 +77,16 @@ export function ensureSchema():Promise<void>{
  key text PRIMARY KEY,
  failures integer NOT NULL DEFAULT 0,
  expires_at timestamptz NOT NULL)`);
+ await client.query(`CREATE TABLE IF NOT EXISTS audit_events (
+ id bigserial PRIMARY KEY,
+ actor_role text NOT NULL CHECK (actor_role IN ('master','dealer','system')),
+ actor_id uuid,
+ action text NOT NULL,
+ entity_type text NOT NULL,
+ entity_id text NOT NULL,
+ details jsonb NOT NULL DEFAULT '{}'::jsonb,
+ created_at timestamptz NOT NULL DEFAULT now())`);
+ await client.query("CREATE INDEX IF NOT EXISTS audit_events_created_idx ON audit_events(created_at DESC)");
  await client.query("COMMIT");
  }catch(e){await client.query("ROLLBACK");throw e}finally{client.release()}
  })().catch(e=>{initialized=undefined;throw e});
