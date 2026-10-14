@@ -12,7 +12,7 @@ export default async function PublishedVehicle({params}:{params:Promise<{id:stri
  let unavailable=false;
  try{
  await ensureSchema();
- const r=await getPool().query<Listing>(`SELECT v.id,v.title,v.category,v.brand,v.model,v.year,v.price_cents,v.mileage,v.fuel,v.transmission,v.city,v.description,t.name AS seller_name,(SELECT vi.url FROM vehicle_images vi WHERE vi.vehicle_id=v.id ORDER BY vi.position ASC,vi.id LIMIT 1) AS image_url FROM vehicles v INNER JOIN tenants t ON t.id=v.tenant_id WHERE v.id=$1 AND v.status='published' AND t.status='active' LIMIT 1`,[id]);
+ const r=await getPool().query<Listing>(`SELECT v.id,v.title,v.category,v.brand,v.model,v.year,v.price_cents,v.mileage,v.fuel,v.transmission,v.city,v.description,t.name AS seller_name,COALESCE((SELECT '/api/media/' || pb.id::text FROM vehicle_photo_blobs pb WHERE pb.vehicle_id=v.id ORDER BY pb.position,pb.created_at LIMIT 1),(SELECT vi.url FROM vehicle_images vi WHERE vi.vehicle_id=v.id ORDER BY vi.position,vi.id LIMIT 1)) AS image_url FROM vehicles v INNER JOIN tenants t ON t.id=v.tenant_id WHERE v.id=$1 AND v.status='published' AND t.status='active' LIMIT 1`,[id]);
  v=r.rows[0];
  }catch(e){console.error("Published listing read failed",e instanceof Error?e.message:"unknown");unavailable=true}
  if(!v&&!unavailable)notFound();
