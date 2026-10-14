@@ -73,6 +73,10 @@ export function ensureSchema():Promise<void>{
  await client.query("ALTER TABLE tenants ADD COLUMN IF NOT EXISTS subscription_status text NOT NULL DEFAULT 'trial'");
  await client.query("ALTER TABLE tenants ADD COLUMN IF NOT EXISTS brand_color text NOT NULL DEFAULT '#e92338'");
  await client.query("ALTER TABLE tenants ADD COLUMN IF NOT EXISTS logo_url text");
+ await client.query(`CREATE TABLE IF NOT EXISTS auth_attempts (
+ key text PRIMARY KEY,
+ failures integer NOT NULL DEFAULT 0,
+ expires_at timestamptz NOT NULL)`);
  await client.query("COMMIT");
  }catch(e){await client.query("ROLLBACK");throw e}finally{client.release()}
  })().catch(e=>{initialized=undefined;throw e});
