@@ -12,4 +12,3 @@ export async function POST(request:Request){try{
  const r=await getPool().query("INSERT INTO vehicles(tenant_id,title,brand,model,category,year,price_cents,mileage,fuel,transmission,city,description,status) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,'draft') RETURNING id,status",[user.tenant_id,title,brand,model,category,year,priceCents,mileage,fuel,transmission,city,description]);
  return NextResponse.json(r.rows[0],{status:201})
  }catch(e){console.error("Dealer create error",e instanceof Error?e.message:"unknown");return NextResponse.json({error:"Serviço indisponível"},{status:503})}}
-}
