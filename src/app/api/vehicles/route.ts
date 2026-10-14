@@ -1,10 +1,12 @@
 import {NextResponse} from "next/server";
 import {getPool} from "../../../lib/db";
+import {ensureSchema} from "../../../lib/schema";
 import {authorized} from "../../../lib/admin-auth";
 export const runtime="nodejs";
 function fail(error:unknown){console.error("Vehicle API error",error instanceof Error?error.message:"unknown");return NextResponse.json({error:"Serviço temporariamente indisponível"},{status:503})}
 export async function GET(request:Request){
  try{
+  await ensureSchema();
   const url=new URL(request.url);const tenant=url.searchParams.get("tenant");const category=url.searchParams.get("category");const q=(url.searchParams.get("q")||"").trim().slice(0,100);
   if(category&&!["carro","moto"].includes(category))return NextResponse.json({error:"Categoria inválida"},{status:400});
   const values:unknown[]=[];const conditions=["v.status='published'","t.status='active'"];
